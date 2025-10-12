@@ -1,10 +1,6 @@
-# 🎯 NexusWalletConnect - Clean Workspace
+# 🎯 Nexus On-Chain Wallet
 
-**Location**: `/mnt/c/Users/crowh/nexus-ocw`  
-**Status**: ✅ Production Ready  
-**Date**: October 12, 2025
 
----
 
 ## 📁 Workspace Structure
 
