@@ -1,0 +1,85 @@
+<!-- Developed by Switch-900 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus On-Chain Wallet</title>
+  
+  <!-- Wallet Extension Conflict Prevention -->
+  <script>
+    // Prevents wallet extension property conflicts from breaking the app
+    const originalDefineProperty = Object.defineProperty;
+    const originalDefineProperties = Object.defineProperties;
+    
+    Object.defineProperty = function(obj, prop, descriptor) {
+      try {
+        return originalDefineProperty.call(this, obj, prop, descriptor);
+      } catch (e) {
+        if (e.message.includes('redefine property')) {
+          console.warn(`Prevented redefinition of property: ${prop}`);
+          return obj;
+        }
+        throw e;
+      }
+    };
+    
+    Object.defineProperties = function(obj, props) {
+      try {
+        return originalDefineProperties.call(this, obj, props);
+      } catch (e) {
+        if (e.message.includes('redefine property')) {
+          console.warn('Prevented redefinition of properties:', Object.keys(props));
+          return obj;
+        }
+        throw e;
+      }
+    };
+  </script>
+  
+  <!-- React & React-DOM (from inscriptions) -->
+  <script src="/content/5d82695b820a676ba23cda5390249f295eacb1a97e4df20fc02eaa501bd20eedi0"></script>
+  <script src="/content/609b117277f1e9c9f27f358fe02db34e13d08915bbcea18770dc36f5f3afcbb2i2"></script>
+  
+  <!-- React-Spring Polyfill -->
+  <script type="module">
+    import ReactDOM from 'react-dom';
+    if (!ReactDOM.unstable_batchedUpdates) {
+      ReactDOM.unstable_batchedUpdates = (callback) => callback();
+    }
+  </script>
+  
+  <!-- Favicon (AVIF format) -->
+  <link rel="icon" href="/content/e1e05d42b1f61edf486f9ca8fcebf96010189227994822c264ba2b8681429ce0i0">
+  
+  <!-- Application Styles (from inscription) -->
+  <link rel="stylesheet" href="/r/sat/650232570299189/at/-1/content">
+  
+  <!-- Base Page Styles -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    }
+    
+    #root {
+      min-height: 100vh;
+    }
+  </style>
+  
+  <!-- Wallet Library Loader (12-loader.js from inscription) -->
+  <script type="module">
+    import NWC from '/r/sat/650232570297610/at/-1/content';
+    window.NexusWalletConnect = NWC;
+    console.log('✅ NexusWalletConnect loaded from inscription');
+  </script>
+  
+  <!-- Main Application Bundle (from inscription) -->
+  <script type="module" crossorigin src="/r/sat/650232570299735/at/-1/content"></script>
+</head>
+<body>
+  <div id="root"></div>
+  
+</body>
+</html>

@@ -8,10 +8,13 @@
     "dev": "cp frontend/index.dev.html frontend/index.html && vite --config frontend/vite.config.js",
     "dev:cleanup": "cp frontend/index.prod.html frontend/index.html",
     "build": "vite build --config frontend/vite.config.js",
+    "build:prod": "vite build --config vite.prod.config.js",
     "build:core": "BUILD_MODE=core vite build",
     "preview": "vite preview --config frontend/vite.config.js",
+    "preview:prod": "vite preview --outDir dist-production",
     "prepare-inscriptions": "node prepare-inscriptions.js",
-    "fix-local-imports": "node fix-local-imports.js"
+    "fix-local-imports": "node fix-local-imports.js",
+    "update-sats": "node update-sat-references.js"
   },
   "devDependencies": {
     "cssnano": "^7.1.1",

@@ -1,6 +1,59 @@
-# 🎯 Nexus On-Chain Wallet
+# 🎯 Nexus On-Chain Wallet - Developed by Switch-900 
+## visit https://ordinals.com/content/7cf63b82b244d41121ef823a6532705cd25257d7420a405daa388394de5b529ei0 
 
+A fully on-chain Bitcoin wallet connector supporting 8 major Bitcoin wallets, deployed entirely as Bitcoin inscriptions.
 
+For the best wallet connect for off chain apps use https://www.lasereyes.build/ 
+
+## � Live Inscriptions
+
+### Core Library Inscriptions (Deployed)
+All wallet provider modules are inscribed on Bitcoin and loaded dynamically:
+
+| Module | SAT Number | Inscription ID |
+|--------|-----------|----------------|
+| **Base Provider** | `1408319431385218` | Core wallet interface |
+| **Normalizers** | `1408319431385764` | Data formatting utilities |
+| **Wallet Connector** | `1180016128405661` | Connection management |
+| **UniSat Provider** | `1180016128407426` | UniSat wallet support |
+| **Xverse Provider** | `1180016128407972` | Xverse wallet support |
+| **OKX Provider** | `1180016128408518` | OKX wallet support |
+| **Leather Provider** | `1180016128409064` | Leather (Stacks) wallet support |
+| **Phantom Provider** | `1180016128409610` | Phantom wallet support |
+| **Wizz Provider** | `1180016128410156` | Wizz wallet support |
+| **Magic Eden Provider** | `1180016128410702` | Magic Eden wallet support |
+| **Oyl Provider** | `1180016128411248` | Oyl wallet support |
+
+### Application Inscriptions (Deployed)
+The complete React application is deployed as modular inscriptions for independent updates:
+
+| Component | SAT Number | Description |
+|-----------|-----------|-------------|
+| **Wallet Loader** | `650232570297610` | Main library loader (12-loader.js) |
+| **App Styles** | `650232570299189` | CSS styles (22.71 KB) |
+| **Main App** | `650232570299735` | React application bundle (105.97 KB) |
+| **HTML Entry** | https://ordinals.com/content/7cf63b82b244d41121ef823a6532705cd25257d7420a405daa388394de5b529ei0 |
+
+### How It Works
+```javascript
+// All providers are loaded from Bitcoin inscriptions
+import { BaseWalletProvider } from '/r/sat/1408319431385218/at/-1/content';
+import { UniSatProvider } from '/r/sat/1180016128407426/at/-1/content';
+import { XverseProvider } from '/r/sat/1180016128407972/at/-1/content';
+// ... 8 wallet providers total
+
+// The loader combines everything and exposes window.NexusWalletConnect
+// Your app imports from the inscription, not from npm!
+```
+
+**Benefits of Inscription Architecture:**
+- ✅ **Immutable**: Code can never be changed or taken down
+- ✅ **Decentralized**: No servers, CDNs, or dependencies
+- ✅ **Modular**: Update individual components without re-inscribing everything
+- ✅ **Compressed**: Brotli compression saves ~85% space on-chain
+- ✅ **Permanent**: Lives on Bitcoin blockchain forever
+
+---
 
 ## 📁 Workspace Structure
 
@@ -296,58 +349,116 @@ npm run prepare-inscriptions
 
 ## 🚀 Usage Examples
 
+### Quick Start: Load from Inscription
+
+Add the Nexus OCW library to your HTML page directly from Bitcoin:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Bitcoin App</title>
+  
+  <!-- Load Nexus Wallet Connect from inscription -->
+  <script type="module">
+    import NWC from '/r/sat/650232570297610/at/-1/content';
+    window.NexusWalletConnect = NWC;
+    console.log('✅ NexusWalletConnect loaded from inscription');
+  </script>
+</head>
+<body>
+  <button onclick="connectWallet()">Connect Wallet</button>
+  
+  <script>
+    async function connectWallet() {
+      // Access the library from window object
+      const NWC = window.NexusWalletConnect;
+      
+      // Detect available wallets
+      const wallets = NWC.detectWallets();
+      console.log('Available wallets:', wallets);
+      
+      // Connect to UniSat (or any supported wallet)
+      try {
+        await NWC.connect('UniSat');
+        const state = NWC.getState();
+        console.log('Connected!', state);
+        
+        // Get balance
+        const balance = await NWC.getBalance();
+        alert(`Balance: ${balance} BTC`);
+      } catch (error) {
+        console.error('Connection failed:', error);
+      }
+    }
+  </script>
+</body>
+</html>
+```
+
+**That's it!** No npm install, no build process, no dependencies. Just load from inscription and use.
+
+---
+
 ### Basic Connection
 ```javascript
-import NexusWalletConnect from './path/to/loader.js';
+// Access NexusWalletConnect from window (already loaded via inscription)
+const NWC = window.NexusWalletConnect;
 
 // Detect installed wallets
-const wallets = NexusWalletConnect.detectWallets();
+const wallets = NWC.detectWallets();
 console.log('Available wallets:', wallets);
 
 // Connect to a wallet
-const provider = await NexusWalletConnect.connect('UniSat');
-console.log('Connected:', NexusWalletConnect.getState());
+const provider = await NWC.connect('UniSat');
+console.log('Connected:', NWC.getState());
 
 // Get balance
-const balance = await NexusWalletConnect.getBalance();
+const balance = await NWC.getBalance();
 console.log('Balance:', balance, 'BTC');
 ```
 
 ### Advanced Features
 ```javascript
+const NWC = window.NexusWalletConnect;
+
 // Xverse multi-address
-if (walletType === 'Xverse') {
-  const addresses = await NexusWalletConnect.getAddresses(['payment', 'ordinals']);
+const state = NWC.getState();
+if (state.walletType === 'Xverse') {
+  const addresses = await NWC.getAddresses(['payment', 'ordinals']);
   console.log('Payment address:', addresses.find(a => a.purpose === 'payment').address);
 }
 
 // Get inscriptions with pagination
-const inscriptions = await NexusWalletConnect.getInscriptions(0, 20);
+const inscriptions = await NWC.getInscriptions(0, 20);
 console.log('First 20 inscriptions:', inscriptions);
 
 // Sign and broadcast PSBT
-const signedPsbt = await NexusWalletConnect.signPsbt(psbtHex);
-const txId = await NexusWalletConnect.pushPsbt(signedPsbt);
+const signedPsbt = await NWC.signPsbt(psbtHex);
+const txId = await NWC.pushPsbt(signedPsbt);
 console.log('Transaction ID:', txId);
 ```
 
 ### New Utility Functions
 ```javascript
+const NWC = window.NexusWalletConnect;
+
 // Get wallet capabilities
-const capabilities = await NexusWalletConnect.getCapabilities();
+const capabilities = await NWC.getCapabilities();
 console.log('Wallet features:', capabilities);
 
 // Get UTXOs (unspent transaction outputs) - UniSat/Wizz only
-const utxos = await NexusWalletConnect.getUtxos();
+const utxos = await NWC.getUtxos();
 console.log('Available UTXOs:', utxos);
 
 // Get BRC-20 token holdings
-const brc20s = await NexusWalletConnect.getBRC20List();
+const brc20s = await NWC.getBRC20List();
 console.log('BRC-20 tokens:', brc20s);
 
 // Usage with OKX/UniSat for BRC-20 transfers
-if (walletType === 'OKX' || walletType === 'UniSat') {
-  const transferResult = await NexusWalletConnect.inscribeTransfer('ordi', '100');
+const state = NWC.getState();
+if (state.walletType === 'OKX' || state.walletType === 'UniSat') {
+  const transferResult = await NWC.inscribeTransfer('ordi', '100');
   console.log('BRC-20 transfer inscription:', transferResult);
 }
 ```
